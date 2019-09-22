@@ -64,6 +64,14 @@
         </style>
     </head>
     <body>
+
+    {{-- @auth
+        @php
+            redirect('')->route('home')
+        @endphp
+    @endauth --}}
+
+
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
