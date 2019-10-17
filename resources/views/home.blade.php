@@ -5,18 +5,86 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Search Videos & Channels</div>
 
                 <div class="card-body">
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
                     @endif
+                    <form action="">
+                        <input type="text" class="form-control" placeholder="Search Videos & Channels" name="search">
+                    </form>
 
-                    You are logged in!
+
                 </div>
             </div>
+
+            @if($channels->count() !== 0)
+            <div class="card mt-3">
+                <div class="card-header">
+                    Channels
+                </div>
+                <div class="card-body border-bottom">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach ($channels as $channel)
+                            <tr>
+                                <td>{!! $channel->name !!}</td>
+
+                                <td>
+                                    <a href="{{route('channels.show', $channel->id)}}" class="btn btn-sm btn-info"
+                                        target="_blank">View Channel</a>
+                                </td>
+                            </tr>
+
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-center">
+                        {{ $channels->appends(request()->query())->links() }}
+                    </div>
+
+                </div>
+            </div>
+            @endif
+
+            @if($videos->count() !== 0)
+            <div class="card mt-3">
+                <div class="card-header">
+                    Videos
+                </div>
+                <div class="card-body border-bottom">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach ($videos as $video)
+                            <tr>
+                                <td>{!! $video->title !!}</td>
+
+                                <td>
+                                    <a href="{{route('videos.show', $video->id)}}" class="btn btn-sm btn-info"
+                                        target="_blank">View Video</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-center">
+                        {{ $videos->appends(request()->query())->links() }}
+                    </div>
+
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>

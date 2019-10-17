@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Http\Requests\Channels\UpdateChannelRequest;
 use Illuminate\Http\Request;
+use App\Helper_Functions\Helper_Functions;
 
 class ChannelController extends Controller
 {
@@ -53,7 +54,8 @@ class ChannelController extends Controller
      */
     public function show(Channel $channel)
     {
-        return view('channels.show', compact('channel'));
+        $videosList = $channel->videos()->paginate(5);
+        return view('channels.show', compact('channel', 'videosList'));
     }
 
     /**
@@ -82,6 +84,10 @@ class ChannelController extends Controller
             $channel->addMediaFromRequest('image')
                 ->toMediaCollection('images');
         }
+
+        $request->name = Helper_Functions::formDataStoreFormat($request->name);
+
+        $request->description = Helper_Functions::formDataStoreFormat($request->description);
 
         $channel->update([
             'name' => $request->name,

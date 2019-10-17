@@ -1,108 +1,196 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-        <title>Laravel</title>
+@section('content')
+<?php
+    $videosList = App\Video::latest()->paginate(10);
+    $videosListCount = $videosList->count();
+    $landingVideo = App\Video::where('percentage', '=', 100 )->latest()->first();
+    $totalVideosCount = App\Video::count();
+?>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+<div class="container">
+    <div class="row justify-content-center">
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+        @if($videosListCount !== 0)
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Search Videos & Channels on {{ config('app.name', 'Laratube') }}</div>
 
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-
-    {{-- @auth
-        @php
-            redirect('')->route('home')
-        @endphp
-    @endauth --}}
+                <div class="card-body">
+                    @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                    @endif
+                    <form action="">
+                        <input type="text" class="form-control" placeholder="Search Videos & Channels" name="search">
+                    </form>
 
 
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
                 </div>
+            </div>
+
+            @if($channels->count() !== 0)
+            <div class="card mt-3">
+                <div class="card-header">
+                    Search Result for Channels on {{ config('app.name', 'Laratube') }}
+                </div>
+                <div class="card-body border-bottom">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach ($channels as $channel)
+                            <tr>
+                                <td>{!! $channel->name !!}</td>
+
+                                <td>
+                                    <a href="{{route('channels.show', $channel->id)}}" class="btn btn-sm btn-info"
+                                        target="_blank">View Channel</a>
+                                </td>
+                            </tr>
+
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-center">
+                        {{ $channels->appends(request()->query())->links() }}
+                    </div>
+
+                </div>
+            </div>
             @endif
 
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
+            @if($videos->count() !== 0)
+            <div class="card mt-3">
+                <div class="card-header">
+                    Search Result for Videos on {{ config('app.name', 'Laratube') }}
                 </div>
+                <div class="card-body border-bottom">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Name</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach ($videos as $video)
+                            <tr>
+                                <td>{!! $video->title !!}</td>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                                <td>
+                                    <a href="{{route('videos.show', $video->id)}}" class="btn btn-sm btn-info"
+                                        target="_blank">View
+                                        Video</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-center">
+                        {{ $videos->appends(request()->query())->links() }}
+                    </div>
+
+                </div>
+            </div>
+            @endif
+
+            <div class="card  my-4">
+                <div class="card-header">
+                    Latest Video on {{ config('app.name', 'Laratube') }}
+                </div>
+                <div class="card-body">
+                    <video id='video' class='video-js' controls preload='auto' width='100%' height='420'
+                        data-setup='{}'>
+                        <source src=' {{ asset(Storage::url("videos/{$landingVideo->id}/{$landingVideo->id}.m3u8")) }}'
+                            type='application/x-mpegURL'>
+                    </video>
+
+                    <div class="card card-body">
+                        <h5>
+                            {!! $landingVideo->title !!}
+                        </h5>
+                        <p class="mb-0">{{ $landingVideo->created_at->toFormattedDateString() }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
-</html>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    All Videos Uploaded on {{ config('app.name', 'Laratube') }}
+                </div>
+                <div class="card-body">
+                    @if($videosListCount !== 0)
+                    <table class="table my-0 table-striped table-bordered table-responsive">
+                        <thead>
+                            <th>Video</th>
+                            <th>Title</th>
+                            <th>Views</th>
+                            <th>Status</th>
+                            <th>Uploaded</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach($videosList as $video)
+                            <tr>
+                                <td><img src="{{ $video->thumbnail}}" alt="" width="60" height="60"></td>
+                                <td>{{ $video->title}}</td>
+                                <td>{{ $video->views}}</td>
+                                <td>{{ $video->percentage === 100 ? 'LIVE' : 'PROCESSING' }}</td>
+                                <td>{{ $video->created_at->toFormattedDateString() }}</td>
+                                <td>
+                                    @if($video->percentage === 100)
+                                    <a href="{{ route('videos.show', $video->id)}}" class="btn btn-sm btn-info"
+                                        target="_blank">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="row justify-content-center mt-4">
+
+                        <h5>Showing {{ $videosListCount}} {{ Str::plural('video', $videosListCount) }} of total
+                            {{ $totalVideosCount }} {{ Str::plural('video', $totalVideosCount) }}</h5>
+                    </div>
+                    <div class="row justify-content-center mt-4">
+                        {{ $videosList->render() }}
+                    </div>
+                    @else
+                    <h5>No Videos Yet!!</h5>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        @endif
+
+
+
+    </div>
+</div>
+@endsection
+
+@section('styles')
+<link href="/css/video-js.css" rel="stylesheet">
+<style>
+    .video-js {
+        width: 100%;
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script src='/js/video.js'></script>
+<script>
+    window.CURRENT_VIDEO = '{{ $video->id }}'
+</script>
+<script src="{{ asset('js/player.js')}}"></script>
+
+@endsection

@@ -10654,6 +10654,7 @@ a.text-dark:focus {
   height: 100px;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow: hidden;
 }
 
 .channel-avatar .channel-avatar-overlay {
@@ -10668,5 +10669,15 @@ a.text-dark:focus {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.1);
+  z-index: 99999;
+}
+
+.channel-avatar img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  transform: translate(-50%, -50%);
 }
 

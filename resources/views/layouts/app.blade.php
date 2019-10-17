@@ -10,8 +10,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -19,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('styles')
 </head>
 
 <body>
@@ -60,6 +60,20 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                @if (Route::has('login'))
+
+                                @auth
+                                <a href="{{ url('/home') }}" class="dropdown-item">Search</a>
+                                @else
+                                <a href="{{ route('login') }}" class="dropdown-item">Login</a>
+
+                                @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="dropdown-item">Register</a>
+                                @endif
+                                @endauth
+
+                                @endif
+
                                 @auth
                                 <a class="dropdown-item"
                                     href="{{ route('channels.show', auth()->user()->channel->id )}}">
@@ -77,7 +91,15 @@
                                     style="display: none;">
                                     @csrf
                                 </form>
+
+
+
                             </div>
+
+
+
+
+
                         </li>
                         @endguest
                     </ul>
@@ -103,6 +125,10 @@
             }
         }
     </script>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+    @yield('scripts')
 
 
 </body>
