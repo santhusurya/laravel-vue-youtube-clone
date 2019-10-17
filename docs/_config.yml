@@ -1,3 +1,3 @@
 theme: jekyll-theme-architect
-title: "Welcome to Laravel-Vue-Youtube-Clone Project" 
-description: "n this project we have built a Web Application similar to Youtube & we can call it a Youtube Clone. This Web Application is built using Laravel Framework 6, VueJS2, MySQL, Axios"
+title: "Laravel-VueJS Youtube Clone Project" 
+description: "Web Application similar to Youtube & we can call it a Youtube Clone. This is built using Laravel Framework 6, VueJS2, MySQL, Axios"
